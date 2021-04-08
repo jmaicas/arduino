@@ -27,10 +27,11 @@ board.analog[pin].enable_reporting()
  
 # Run until the total time is reached
 counter = 0
+count_betw_interv = 0
 delay_after_stimulus = delay_time
 delay_stimulus = False
 keep_stimulus = False
-took_nouse_out = True
+took_nose_out = True
 
 # todo the rat should not get another stimulation before 0.5 s
 
@@ -41,19 +42,25 @@ for i in np.arange(0, total_time, sampling_time):
       
       if (board.analog[pin].read() > 0.75):
         
-        if counter < stim_len and took_nouse_out:
+        if counter < stim_len and took_nose_out and count_betw_interv > 0.5:
           board.digital[pin_out].write(1)
           keep_stimulus = True    
+          count_betw_interv = 0
         elif counter > stim_len:
-          took_nouse_out = False
+          took_nose_out = False
           board.digital[pin_out].write(0)
+          count_betw_interv = count_betw_interv + sampling_time
           counter = 0
           keep_stimulus = False
+        elif count_betw_interv <= 0.5:
+          count_betw_interv = count_betw_interv + sampling_time
+
           
         counter = counter + sampling_time
 
       else:
-        took_nouse_out = True
+        took_nose_out = True
+        count_betw_interv = count_betw_interv + 1
         if counter < stim_len and keep_stimulus:
           board.digital[pin_out].write(1)
           counter = counter + sampling_time
