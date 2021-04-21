@@ -171,6 +171,6 @@ for rec in np.arange(recordings_number):
   
   filename = datetime.datetime.now().strftime("%d%m%Y-%H%M%S")
   df_stim.to_excel(folder + 'record_' + str(rec+1) + '_' + filename + '.xlsx')
-  print('Recording finished')
+  print('Recording number ' + str(rec + 1) + ' finished')
   
 board.exit()

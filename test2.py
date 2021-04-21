@@ -1,4 +1,4 @@
-import pyfirmata
+#import pyfirmata
 import numpy as np
 import pandas as pd
 import xlsxwriter
@@ -9,10 +9,10 @@ import datetime
 ###############################################
 recordings_number = 10 
 # folder to store the recordings. It needs a double \ to separate folders
-folder = 'C:\\Users\\thoma\\'
+folder = 'C:\\Users\\Yo\\Documents\\test\\'
 
 # time in minutes to run the experiment
-time_min = 5 # in minutes
+time_min = 0.5 # in minutes
 # delay before allowing another stimulation
 thres_betw_interv = 1 # in seconds
 
@@ -56,4 +56,4 @@ for rec in np.arange(recordings_number):
   
   filename = datetime.datetime.now().strftime("%d%m%Y-%H%M%S")
   df_stim.to_excel(folder + 'record_' + str(rec+1) + '_' + filename + '.xlsx')
-  print('Recording finished')
+  print('Recording number ' + str(rec + 1) + ' finished')
