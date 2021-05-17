@@ -159,10 +159,12 @@ for rec in np.arange(recordings_number):
             board.digital[pin2_out].write(0)
             board.digital[pin2_outduplicated].write(0)
             keep_stimulus2 = False
+
+        stim_times2[c] = int(keep_stimulus2)
+
       else:
-        print("Pin 2 with no value")
+        print("Pin 2 with no value")  
       
-      stim_times2[c] = int(keep_stimulus2)
 
       board.pass_time(sampling_time)
 
