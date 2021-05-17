@@ -7,9 +7,9 @@ import datetime
 ###############################################
 ### Parameters to change between recordings ###
 ###############################################
-recordings_number = 10 
+recordings_number = 12
 # folder to store the recordings. It needs a double \ to separate folders
-folder = 'C:\\Users\\thoma\\'
+folder = 'C:\\MFB stim\\1936\\test\\'
 
 # time in minutes to run the experiment
 time_min = 5 # in minutes
@@ -167,10 +167,14 @@ for rec in np.arange(recordings_number):
   board.digital[pin2_out].write(0)
   board.digital[pin2_outduplicated].write(0)
 
-  df_stim = pd.DataFrame({'Time': time, 'Poke in 1': poke_times, 'Stim from 1': stim_times, 'Poke in 2': poke_times2, 'Stim from 2': stim_times2})
+  total_number_stims1 = sum(stim_times)/9
+  print('Total number of rewards hole 1:', total_number_stims1)
+
+  df_stim = pd.DataFrame({'Time': time, 'Poke in 1': poke_times, 'Stim from 1': stim_times, 'Poke in 2': poke_times2, 'Stim from 2': stim_times2, 'Total_number_stim': total_number_stims1})
   
   filename = datetime.datetime.now().strftime("%d%m%Y-%H%M%S")
   df_stim.to_excel(folder + 'record_' + str(rec+1) + '_' + filename + '.xlsx')
   print('Recording number ' + str(rec + 1) + ' finished')
+  print('')
   
 board.exit()

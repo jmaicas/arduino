@@ -7,19 +7,19 @@ import datetime
 ###############################################
 ### Parameters to change between recordings ###
 ###############################################
-recordings_number = 10 
+recordings_number = 1 
 # folder to store the recordings. It needs a double \ to separate folders
-folder = 'C:\\Users\\thoma\\'
+folder = 'C:\\MFB stim\\1935\\LinearTrack\\'
 
 # time in minutes to run the experiment
-time_min = 5 # in minutes
+time_min = 10 # in minutes
 # delay before allowing another stimulation
 thres_betw_interv = 1 # in seconds
 
 # Arduino pins to write to or read from
 pin = 1 # analog pin to receive the obstacle info
 pin2 = 2 # analog pin to receive the second obstacle info
-pin_out = 12 # digital pin to send the trigger info
+pin_out = 8 # digital pin to send the trigger info
 pin_outduplicated = 10 # to light the led #1
 pin2_out = 8 # digital pin to send the trigger info
 pin2_outduplicated = 6 # to light the led #2
@@ -72,12 +72,14 @@ for rec in np.arange(recordings_number):
       if board.analog[pin].read() is not None:
         
         if (board.analog[pin].read() > 0.75):
+          #print('poking in hole 1')
 
           poke_times1[c] = 1
           
           if counter < stim_len and visited_hole_2:
             board.digital[pin_out].write(1)
             board.digital[pin_outduplicated].write(1)
+            print('stim 1')
             keep_stimulus = True
 
           elif counter >= stim_len:
@@ -94,6 +96,7 @@ for rec in np.arange(recordings_number):
           if counter < stim_len and keep_stimulus:
             board.digital[pin_out].write(1)
             board.digital[pin_outduplicated].write(1)
+            print('stim 1')
             counter = counter + sampling_time                        
           elif counter >= stim_len and keep_stimulus:
             visited_hole_2 = False
@@ -118,10 +121,12 @@ for rec in np.arange(recordings_number):
         
         if (board.analog[pin2].read() > 0.75):
           poke_times2[c] = 1
+          #print('poke in hole 2')
           
           if counter2 < stim_len and visited_hole_1:
             board.digital[pin2_out].write(1)
             board.digital[pin2_outduplicated].write(1)
+            print('stim 2')
             keep_stimulus2 = True
 
           elif counter2 > stim_len:
@@ -138,6 +143,7 @@ for rec in np.arange(recordings_number):
           if counter2 < stim_len and keep_stimulus2:
             board.digital[pin2_out].write(1)
             board.digital[pin2_outduplicated].write(1)
+            print('stim 2')
             counter2 = counter2 + sampling_time
           
           elif counter2 >= stim_len and keep_stimulus2:
@@ -168,10 +174,16 @@ for rec in np.arange(recordings_number):
   board.digital[pin2_out].write(0)
   board.digital[pin2_outduplicated].write(0)
 
-  df_stim = pd.DataFrame({'Time': time, 'Poke in 1': poke_times1, 'Stim from 1': stim_times1, 'Poke in 2': poke_times2, 'Stim from 2': stim_times2})
+  total_number_stims1 = sum(stim_times1)/9
+  print('Total number of rewards hole 1:', total_number_stims1)
+  total_number_stims2 = sum(stim_times2)/9
+  print('Total number of rewards hole 2:', total_number_stims2)
+
+  df_stim = pd.DataFrame({'Time': time, 'Poke in 1': poke_times1, 'Stim from 1': stim_times1, 'Poke in 2': poke_times2, 'Stim from 2': stim_times2, 'Total_stim1': total_number_stims1, 'Total_stim2': total_number_stims2})
   
   filename = datetime.datetime.now().strftime("%d%m%Y-%H%M%S")
   df_stim.to_excel(folder + 'record_' + str(rec+1) + '_' + filename + '.xlsx')
   print('Recording number ' + str(rec + 1) + ' finished')
+  print('')
   
 board.exit()
