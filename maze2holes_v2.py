@@ -74,15 +74,13 @@ for rec in np.arange(recordings_number):
         if (board.analog[pin].read() > 0.75) or (board.analog[pin2].read() > 0.75):
           #print('poking in hole 1')
 
-          if counter < stim_len and visited_hole_2:
+          if counter < stim_len:
             board.digital[pin_out].write(1)
             board.digital[pin_outled].write(1)
             print('stim 1')
             keep_stimulus = True
 
           elif counter >= stim_len:
-            visited_hole_2 = False
-            visited_hole_1 = True            
             board.digital[pin_out].write(0)
             board.digital[pin_outled].write(0)
             counter = 0
@@ -97,8 +95,6 @@ for rec in np.arange(recordings_number):
             print('stim 1')
             counter = counter + sampling_time                        
           elif counter >= stim_len and keep_stimulus:
-            visited_hole_2 = False
-            visited_hole_1 = True
             counter = 0
             board.digital[pin_out].write(0)
             board.digital[pin_outled].write(0)
