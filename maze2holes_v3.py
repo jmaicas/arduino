@@ -66,9 +66,12 @@ for rec in np.arange(recordings_number):
   
   for i in np.arange(0, total_time, sampling_time):
       
-      #print("\n Checking state at second %f" % i)
-      #print("Pin %i : %s" % (pin, board.analog[pin].read()))
-      if board.analog[pin].read() is not None:
+    #print("\n Checking state at second %f" % i)
+    #print("Pin %i : %s" % (pin, board.analog[pin].read()))
+    if board.analog[pin].read() is not None and board.analog[pin2] is not None:
+      
+      if (board.analog[pin].read() > 0.75) or (board.analog[pin2].read() > 0.75):
+        #print('poking in hole 1')
         
         if (board.analog[pin].read() > 0.75):
           #print('poking in hole 1')
@@ -111,12 +114,6 @@ for rec in np.arange(recordings_number):
             keep_stimulus = False
         
         stim_times1[c] = int(keep_stimulus)
-
-      else:
-        print("Pin with no value")
-
-      # Analysis for the detector that does not give reinforcement
-      if board.analog[pin2].read() is not None:
         
         if (board.analog[pin2].read() > 0.75):
           poke_times2[c] = 1
@@ -161,13 +158,13 @@ for rec in np.arange(recordings_number):
 
         stim_times2[c] = int(keep_stimulus2)
 
-      else:
-        print("Pin 2 with no value")  
+    else:
+      print("Pins with no value")  
       
 
-      board.pass_time(sampling_time)
+    board.pass_time(sampling_time)
 
-      c = c + 1
+    c = c + 1
 
   # Setting the outputs to 0 so the animal does not receive anything once the experiment is finished
   board.digital[pin_out].write(0)
