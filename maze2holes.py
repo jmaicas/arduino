@@ -69,7 +69,7 @@ for rec in np.arange(recordings_number):
       
       #print("\n Checking state at second %f" % i)
       #print("Pin %i : %s" % (pin, board.analog[pin].read()))
-      if board.analog[pin].read() is not None:
+      if board.analog[pin].read() is not None and not keep_stimulus2:
         
         if (board.analog[pin].read() > 0.75):
           #print('poking in hole 1')
@@ -114,10 +114,10 @@ for rec in np.arange(recordings_number):
         stim_times1[c] = int(keep_stimulus)
 
       else:
-        print("Pin with no value")
+        print("Pin with no value or stimulus on the other hole")
 
       # Analysis for the detector that does not give reinforcement
-      if board.analog[pin2].read() is not None:
+      if board.analog[pin2].read() is not None and not keep_stimulus:
         
         if (board.analog[pin2].read() > 0.75):
           poke_times2[c] = 1
@@ -163,7 +163,7 @@ for rec in np.arange(recordings_number):
         stim_times2[c] = int(keep_stimulus2)
 
       else:
-        print("Pin 2 with no value")  
+        print("Pin 2 with no value or stim in the other hole")  
       
 
       board.pass_time(sampling_time)
