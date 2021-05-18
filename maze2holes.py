@@ -114,7 +114,8 @@ for rec in np.arange(recordings_number):
         stim_times1[c] = int(keep_stimulus)
 
       else:
-        print("Pin with no value or stimulus on the other hole")
+        if not keep_stimulus2:
+          print("Pin 1 with no value")
 
       # Analysis for the detector that does not give reinforcement
       if board.analog[pin2].read() is not None and not keep_stimulus:
@@ -163,7 +164,8 @@ for rec in np.arange(recordings_number):
         stim_times2[c] = int(keep_stimulus2)
 
       else:
-        print("Pin 2 with no value or stim in the other hole")  
+        if not keep_stimulus:
+          print("Pin 2 with no value")  
       
 
       board.pass_time(sampling_time)
