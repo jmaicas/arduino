@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import xlsxwriter
 import datetime
+from time import sleep
 
 ###############################################
 ### Parameters to change between recordings ###
@@ -23,8 +24,11 @@ pin_out = 8 # digital pin to send the trigger info
 pin_outduplicated = 10 # to light the led #1
 pin2_out = 8 # digital pin to send the trigger info
 pin2_outduplicated = 6 # to light the led #2
+pin_start = 7 # led that will light at the beginning of each recording
+pin_buzz = 3 # feeding the speaker that will buzz at the beginning of each recording
 
 total_time = time_min*60 # in seconds
+time_exp_start = 1 # the speaker and led from pin3 will work for 1 second
 
 # Parameters to follow the protocol in Carlezon & Chartoff (2007)
 stim_len = 0.44  # it should be 0.5s but the TTL hardware that receives the arduino signal 
@@ -36,7 +40,9 @@ half_sampling = sampling_time/2
 # Creates a new board 
 board = pyfirmata.Arduino('COM7') # Windows
 #board = pyfirmata.Arduino('/dev/ttyACM0') # Linux
-print("Setting up the connection to the board ...")
+print("Setting up the connection to the board and waiting for synchronization")
+# Need to give some time to pyFirmata and Arduino to synchronize
+sleep(5)
 it = pyfirmata.util.Iterator(board)
 it.start()
  
@@ -44,7 +50,7 @@ it.start()
 board.analog[pin].enable_reporting()
 board.analog[pin2].enable_reporting()
 
-
+samples_exp_start = time_exp_start*sampling_freq
 
 # Allows stimulation in an extreme only when an stimulation has been triggered in the other end
 for rec in np.arange(recordings_number):
@@ -66,6 +72,13 @@ for rec in np.arange(recordings_number):
   c = 0
   
   for i in np.arange(0, total_time, sampling_time):
+      
+      if c < samples_exp_start:
+        board.digital[pin_start].write(1)
+        board.digital[pin_buzz].write(1) # https://github.com/Python-programming-Arduino/ppfa-code/blob/master/Chapter%2004/buzzerPattern.py
+      else:
+        board.digital[pin_start].write(0)
+        board.digital[pin_buzz].write(0)
       
       #print("\n Checking state at second %f" % i)
       #print("Pin %i : %s" % (pin, board.analog[pin].read()))
@@ -177,6 +190,8 @@ for rec in np.arange(recordings_number):
   board.digital[pin_outduplicated].write(0)
   board.digital[pin2_out].write(0)
   board.digital[pin2_outduplicated].write(0)
+  board.digital[pin_start].write(0)
+  board.digital[pin_buzz].write(0)
 
   total_number_stims1 = sum(stim_times1)/9
   print('Total number of rewards hole 1:', total_number_stims1)
