@@ -149,7 +149,7 @@ for rec in np.arange(recordings_number):
         # A whole stimulus has finished
         if prev_stimulus and not keep_stimulus:
             number_of_pokes = number_of_pokes + 1
-            print("stimulus increased")
+            print("stimulus increased hole 1")
 
       else:
         print("Pin with no value")
@@ -194,32 +194,21 @@ for rec in np.arange(recordings_number):
             board.digital[pin2_outduplicated].write(0)
             keep_stimulus2 = False
 
-          stim_times2.append(int(keep_stimulus2))
-          #stim_times2[c] = int(keep_stimulus2)
+        stim_times2.append(int(keep_stimulus2))
+        #stim_times2[c] = int(keep_stimulus2)
         
         if prev_stimulus2 and not keep_stimulus2:
             number_of_pokes = number_of_pokes + 1
+            print("stimulus increased hole 2")
       else:
         print("Pin 2 with no value")     
       
 
-      board.pass_time(sampling_time)
-      print('********', len(stim_times))
-      print(len(stim_times2))
-      print(len(poke_times))
-      print(len(poke_times2))
-
+      board.pass_time(sampling_time)      
 
       c = c + 1
   
   
-  #stim_times = np.zeros(int(c/sampling_time))
-  #stim_times2 = np.zeros(int(c/sampling_time))
-  #oke_times = np.zeros(int(c/sampling_time))
-  #poke_times2 = np.zeros(int(c/sampling_time))
-  
-  
-
   # Setting the outputs to 0 so the animal does not receive anything once the experiment is finished
   board.digital[pin_out].write(0)
   board.digital[pin_outduplicated].write(0)
